@@ -1,0 +1,47 @@
+syntax = "proto3";
+package wmm.emoji.v1;
+option go_package = "github.com/strideynet/go-monorepo-microservices/service.emoji/proto/v1";
+
+message Emoji {
+    string id = 1;
+    string str = 2;
+}
+
+message ListRequest {
+
+}
+
+message ListResponse {
+    repeated Emoji emojis = 1;
+}
+
+message CreateRequest {
+    Emoji emoji = 1;
+}
+
+message CreateResponse {
+
+}
+
+message FindByIdRequest {
+    string id = 1;
+}
+
+message FindByIdResponse {
+    Emoji emoji = 1;
+}
+
+message DeleteRequest {
+    string id = 1;
+}
+
+message DeleteResponse {
+
+}
+
+service EmojiService {
+    rpc List(ListRequest) returns (ListResponse);
+    rpc Create(CreateRequest) returns (CreateResponse);
+    rpc Delete(DeleteRequest) returns (DeleteResponse);
+    rpc FindById(FindByIdRequest) returns (FindByIdResponse);
+}
