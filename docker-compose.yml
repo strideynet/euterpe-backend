@@ -1,0 +1,25 @@
+networks:
+  cudo-compute:
+    name: cudo-compute
+services:
+  broker:
+    build:
+      context: .
+      dockerfile: packages/broker/Dockerfile
+      target: builder
+    command: make run
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      MYSQL_DATABASE: compute_dev
+    working_dir: /app/packages/broker
+    image: "cudo-compute"
+    networks:
+      - cudo-compute
+    ports:
+      - "8080:8080"
+    volumes:
+      - $PWD:/app
+version: "3.8"
+

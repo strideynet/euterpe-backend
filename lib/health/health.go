@@ -4,7 +4,7 @@ package health
 
 import (
 	"context"
-	"gmm/lib/log"
+	"euterpe/lib/log"
 	"sync"
 
 	"google.golang.org/grpc/health/grpc_health_v1"

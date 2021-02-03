@@ -19,7 +19,7 @@ func TestUnaryInterceptor(t *testing.T) {
 	handlerCalled := false
 
 	testRes := "valid"
-	res, err := UnaryInterceptor(ctx, struct{}{}, &grpc.UnaryServerInfo{},  func(ctx context.Context, req interface{}) (interface{}, error) {
+	res, err := UnaryInterceptor(ctx, struct{}{}, &grpc.UnaryServerInfo{}, func(ctx context.Context, req interface{}) (interface{}, error) {
 		handlerCalled = true
 
 		str := Extract(ctx)

@@ -2,7 +2,7 @@ package log
 
 import (
 	"context"
-	"gmm/lib/reqid"
+	"euterpe/lib/reqid"
 
 	"go.uber.org/zap"
 )

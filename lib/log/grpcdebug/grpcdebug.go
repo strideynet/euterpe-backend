@@ -3,7 +3,7 @@ package grpcdebug
 
 import (
 	"context"
-	"gmm/lib/log"
+	"euterpe/lib/log"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"time"

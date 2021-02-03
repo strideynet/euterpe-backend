@@ -1,0 +1,52 @@
+syntax = "proto3";
+package euterpe.spotify.v1;
+option go_package = "github.com/strideynet/euterpe-backend/service.spotify/proto/v1;spotifyv1pb";
+
+service Spotify {
+    rpc RedeemCode(RedeemCodeRequest) returns (RedeemCodeResponse);
+    rpc GetAuthURL(GetAuthURLRequest) returns (GetAuthURLResponse);
+    rpc GetListening(GetListeningRequest) returns (GetListeningResponse);
+}
+
+// Represents a user on the spotify service
+message User {
+    string display_name = 1;
+    string email = 2;
+    string id = 3;
+}
+
+message Artist {
+    string id = 1;
+    string name = 2;
+}
+
+message Track {
+    string id = 1;
+    string name = 2;
+    repeated Artist artists = 3;
+}
+
+message RedeemCodeRequest {
+    string code = 1;
+    string discord_id = 2;
+}
+
+message RedeemCodeResponse {
+    User user = 1;
+}
+
+message GetAuthURLRequest {
+    string discord_id = 1;
+}
+
+message GetAuthURLResponse {
+    string url = 1;
+}
+
+message GetListeningRequest {
+    string discord_id = 1;
+}
+
+message GetListeningResponse {
+    Track track = 1;
+}

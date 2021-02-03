@@ -6,8 +6,8 @@ package errors
 // TODO: Support GRPC "ErrorDetails"
 
 import (
+	"euterpe/lib/errors/stack"
 	"fmt"
-	"gmm/lib/errors/stack"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

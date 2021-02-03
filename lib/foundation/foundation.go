@@ -4,12 +4,13 @@
 package foundation
 
 import (
+	"euterpe/lib/health"
+	"euterpe/lib/log"
+	"euterpe/lib/log/grpcdebug"
+	"euterpe/lib/reqid"
+	"euterpe/lib/sentry"
+	"euterpe/lib/version"
 	"fmt"
-	"gmm/lib/health"
-	"gmm/lib/log"
-	"gmm/lib/log/grpcdebug"
-	"gmm/lib/reqid"
-	"gmm/lib/sentry"
 	"net"
 	"net/http"
 	"os"
@@ -75,8 +76,12 @@ const shutdownWaitSeconds = 2
 
 // Run starts the main service as well as several debugging/healthcheck services such as prometheus.
 // It should only be called once and should be called once any desired services have been attached.
-func (f *Foundation) Run() error {
-	logger.Info("foundation Run() called")
+func (f *Foundation) Run() {
+	logger.Info(
+		"starting euterpe",
+		zap.String("BuildTime", version.BuildTime),
+		zap.String("CommitHash", version.CommitHash),
+	)
 	// Register meta services used for debugging/healthchecking
 	grpc_health_v1.RegisterHealthServer(f.grpcS, f.healthS)
 	reflection.Register(f.grpcS)
@@ -128,5 +133,8 @@ func (f *Foundation) Run() error {
 		close(shut)
 	}()
 
-	return <-shut
+	err := <-shut
+	if err != nil {
+		logger.Fatal("error thrown by running processes", zap.Error(err))
+	}
 }

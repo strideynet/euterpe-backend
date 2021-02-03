@@ -2,7 +2,7 @@ package sentry
 
 import (
 	"context"
-	"gmm/lib/reqid"
+	"euterpe/lib/reqid"
 	"log"
 
 	"github.com/getsentry/sentry-go"
