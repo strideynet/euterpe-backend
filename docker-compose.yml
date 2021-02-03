@@ -1,25 +1,29 @@
-networks:
-  cudo-compute:
-    name: cudo-compute
+
 services:
-  broker:
-    build:
-      context: .
-      dockerfile: packages/broker/Dockerfile
-      target: builder
-    command: make run
+  spotify:
+    image: golang:1.15.7-buster
+    command: go run /app/service.spotify/main.go
+    working_dir: /app
+    expose: ["8080"]
+    labels:
+    - traefik.http.routers.spotify.rule=Host(`spotify.localtest.me`)
+    - traefik.http.services.spotify.loadbalancer.server.port=8080
+    - traefik.http.services.spotify.loadbalancer.server.scheme=h2c
     depends_on:
-      - mysql
-      - redis
-    environment:
-      MYSQL_DATABASE: compute_dev
-    working_dir: /app/packages/broker
-    image: "cudo-compute"
-    networks:
-      - cudo-compute
-    ports:
-      - "8080:8080"
+    - rp
     volumes:
-      - $PWD:/app
+    - $PWD:/app
+
+  rp:
+    image: traefik:v2.2
+    command:
+    - --api.insecure=true
+    - --providers.docker=true
+    ports:
+    - "80:80"
+    - "8080:8080"
+    volumes:
+    # So that Traefik can listen to the Docker events
+    - /var/run/docker.sock:/var/run/docker.sock
 version: "3.8"
 
