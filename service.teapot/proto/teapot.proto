@@ -1,0 +1,43 @@
+syntax = "proto3";
+package euterpe.teapot.v1;
+option go_package = "github.com/strideynet/euterpe-backend/service.teapot/proto/v1;teapotv1pb";
+
+import "google/protobuf/timestamp.proto";
+
+service teapot {
+    rpc GetById(GetByIdRequest) returns (GetByIdResponse);
+    rpc Create(CreateRequest) returns (CreateResponse);
+}
+
+// Teapot represents a teapot
+message Teapot {
+    string id = 1;
+    string name = 2;
+    float radius = 3;
+    float height = 4;
+
+    google.protobuf.Timestamp create_time = 5;
+    google.protobuf.Timestamp update_time = 6;
+
+    string description = 7;
+}
+
+message GetByIdRequest {
+    string id = 1;
+}
+
+message GetByIdResponse {
+    Teapot teapot = 1;
+}
+
+message CreateRequest {
+    string name = 1;
+    string description = 2; // description is a tweet-length
+    float radius = 3;
+    float height = 4;
+}
+
+message CreateResponse {
+    Teapot teapot = 1;
+}
+

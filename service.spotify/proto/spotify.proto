@@ -2,7 +2,7 @@ syntax = "proto3";
 package euterpe.spotify.v1;
 option go_package = "github.com/strideynet/euterpe-backend/service.spotify/proto/v1;spotifyv1pb";
 
-service Spotify {
+service spotify {
     rpc RedeemCode(RedeemCodeRequest) returns (RedeemCodeResponse);
     rpc GetAuthURL(GetAuthURLRequest) returns (GetAuthURLResponse);
     rpc GetListening(GetListeningRequest) returns (GetListeningResponse);
