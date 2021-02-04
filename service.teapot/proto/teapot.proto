@@ -7,14 +7,15 @@ import "google/protobuf/timestamp.proto";
 service teapot {
     rpc GetById(GetByIdRequest) returns (GetByIdResponse);
     rpc Create(CreateRequest) returns (CreateResponse);
+    rpc CalculateVolume(CalculateVolumeRequest) returns (CalculateVolumeResponse);
 }
 
 // Teapot represents a teapot
 message Teapot {
     string id = 1;
     string name = 2;
-    float radius = 3;
-    float height = 4;
+    double radius = 3;
+    double height = 4;
 
     google.protobuf.Timestamp create_time = 5;
     google.protobuf.Timestamp update_time = 6;
@@ -33,11 +34,19 @@ message GetByIdResponse {
 message CreateRequest {
     string name = 1;
     string description = 2; // description is a tweet-length
-    float radius = 3;
-    float height = 4;
+    double radius = 3;
+    double height = 4;
 }
 
 message CreateResponse {
     Teapot teapot = 1;
+}
+
+message CalculateVolumeRequest {
+    string id = 1;
+}
+
+message CalculateVolumeResponse {
+    double volume = 1;
 }
 

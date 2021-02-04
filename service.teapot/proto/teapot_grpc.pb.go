@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 type TeapotClient interface {
 	GetById(ctx context.Context, in *GetByIdRequest, opts ...grpc.CallOption) (*GetByIdResponse, error)
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
+	CalculateVolume(ctx context.Context, in *CalculateVolumeRequest, opts ...grpc.CallOption) (*CalculateVolumeResponse, error)
 }
 
 type teapotClient struct {
@@ -47,12 +48,22 @@ func (c *teapotClient) Create(ctx context.Context, in *CreateRequest, opts ...gr
 	return out, nil
 }
 
+func (c *teapotClient) CalculateVolume(ctx context.Context, in *CalculateVolumeRequest, opts ...grpc.CallOption) (*CalculateVolumeResponse, error) {
+	out := new(CalculateVolumeResponse)
+	err := c.cc.Invoke(ctx, "/euterpe.teapot.v1.teapot/CalculateVolume", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TeapotServer is the server API for Teapot service.
 // All implementations must embed UnimplementedTeapotServer
 // for forward compatibility
 type TeapotServer interface {
 	GetById(context.Context, *GetByIdRequest) (*GetByIdResponse, error)
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
+	CalculateVolume(context.Context, *CalculateVolumeRequest) (*CalculateVolumeResponse, error)
 	mustEmbedUnimplementedTeapotServer()
 }
 
@@ -65,6 +76,9 @@ func (UnimplementedTeapotServer) GetById(context.Context, *GetByIdRequest) (*Get
 }
 func (UnimplementedTeapotServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedTeapotServer) CalculateVolume(context.Context, *CalculateVolumeRequest) (*CalculateVolumeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CalculateVolume not implemented")
 }
 func (UnimplementedTeapotServer) mustEmbedUnimplementedTeapotServer() {}
 
@@ -115,6 +129,24 @@ func _Teapot_Create_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Teapot_CalculateVolume_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CalculateVolumeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TeapotServer).CalculateVolume(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/euterpe.teapot.v1.teapot/CalculateVolume",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TeapotServer).CalculateVolume(ctx, req.(*CalculateVolumeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Teapot_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "euterpe.teapot.v1.teapot",
 	HandlerType: (*TeapotServer)(nil),
@@ -126,6 +158,10 @@ var _Teapot_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _Teapot_Create_Handler,
+		},
+		{
+			MethodName: "CalculateVolume",
+			Handler:    _Teapot_CalculateVolume_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
