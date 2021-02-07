@@ -1,10 +1,23 @@
-
+version: "3.8"
 services:
+  discord:
+    image: golang:1.15.7-buster
+    command: go run /app/service.discord/main.go
+    working_dir: /app
+    expose: ["8080", "9090"]
+    labels:
+    - traefik.http.routers.discord.rule=Host(`discord.localtest.me`)
+    - traefik.http.services.discord.loadbalancer.server.port=8080
+    - traefik.http.services.discord.loadbalancer.server.scheme=h2c
+    depends_on:
+    - rp
+    volumes:
+    - $PWD:/app
   spotify:
     image: golang:1.15.7-buster
     command: go run /app/service.spotify/main.go
     working_dir: /app
-    expose: ["8080"]
+    expose: ["8080", "9090"]
     labels:
     - traefik.http.routers.spotify.rule=Host(`spotify.localtest.me`)
     - traefik.http.services.spotify.loadbalancer.server.port=8080
@@ -13,7 +26,20 @@ services:
     - rp
     volumes:
     - $PWD:/app
-
+  teapot:
+    image: golang:1.15.7-buster
+    command: go run /app/service.teapot/main.go
+    working_dir: /app
+    expose: ["8080", "9090"]
+    labels:
+    - traefik.http.routers.teapot.rule=Host(`teapot.localtest.me`)
+    - traefik.http.services.teapot.loadbalancer.server.port=8080
+    - traefik.http.services.teapot.loadbalancer.server.scheme=h2c
+    depends_on:
+    - rp
+    volumes:
+    - $PWD:/app
+  
   rp:
     image: traefik:v2.2
     command:
@@ -25,5 +51,4 @@ services:
     volumes:
     # So that Traefik can listen to the Docker events
     - /var/run/docker.sock:/var/run/docker.sock
-version: "3.8"
 

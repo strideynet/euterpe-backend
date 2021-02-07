@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  {{ range . }}
+  {{- .Name }}:
+    image: golang:1.15.7-buster
+    command: go run /app/service.{{ .Name }}/main.go
+    working_dir: /app
+    expose: ["8080", "9090"]
+    labels:
+    - traefik.http.routers.{{ .Name }}.rule=Host(`{{ .Name }}.localtest.me`)
+    - traefik.http.services.{{ .Name }}.loadbalancer.server.port=8080
+    - traefik.http.services.{{ .Name }}.loadbalancer.server.scheme=h2c
+    depends_on:
+    - rp
+    volumes:
+    - $PWD:/app
+  {{ end }}
+  rp:
+    image: traefik:v2.2
+    command:
+    - --api.insecure=true
+    - --providers.docker=true
+    ports:
+    - "80:80"
+    - "8080:8080"
+    volumes:
+    # So that Traefik can listen to the Docker events
+    - /var/run/docker.sock:/var/run/docker.sock
+
