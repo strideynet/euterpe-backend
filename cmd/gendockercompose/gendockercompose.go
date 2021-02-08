@@ -70,7 +70,6 @@ func run() error {
 	})
 }
 
-// TODO: error handle rather than panic lol
 func main() {
 	err := run()
 	if err != nil {
