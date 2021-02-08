@@ -1,6 +1,9 @@
+# THIS FILE IS AUTO-GENERATED. DO NOT MANUALLY EDIT.
+# Use ```make dockercompose``
+# Generated at {{ .Time }}
 version: "3.8"
 services:
-  {{ range . }}
+  {{ range .Services }}
   {{- .Name }}:
     image: golang:1.15.7-buster
     command: go run /app/service.{{ .Name }}/main.go
