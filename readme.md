@@ -5,3 +5,11 @@
 Following the following conventions on API design:
 - https://cloud.google.com/apis/design/standard_fields
 - https://cloud.google.com/apis/design/naming_convention
+
+## Scripts
+
+### Generating from protos
+
+```shell
+make protos
+```

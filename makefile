@@ -23,3 +23,6 @@ protos:
 .PHONY: mocks
 mocks:
 	mockery --all --keeptree
+.PHONY: dockercompose
+dockercompose:
+	go run ./cmd/gendockercompose
