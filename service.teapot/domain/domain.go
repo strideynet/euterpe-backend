@@ -6,12 +6,12 @@ import (
 )
 
 type Teapot struct {
-	ID         string
-	Name       string
-	Radius     float64
-	Height     float64
-	CreateTime time.Time
-	UpdateTime time.Time
+	ID         string    `db:"id"`
+	Name       string    `db:"name"`
+	Radius     float64   `db:"radius"`
+	Height     float64   `db:"height"`
+	CreateTime time.Time `db:"create_time"`
+	UpdateTime time.Time `db:"update_time"`
 }
 
 // Volume returns the volume of the cylindrical teapot in cubic metres
