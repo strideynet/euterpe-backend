@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"euterpe/service.teapot/dao"
-	"euterpe/service.teapot/domain"
 	teapotv1pb "euterpe/service.teapot/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
+	"math"
 )
 
 type Service struct {
@@ -69,8 +69,12 @@ func (s *Service) CalculateVolume(ctx context.Context, req *teapotv1pb.Calculate
 		return nil, errors.New("id should be non-empty string")
 	}
 
-	// TODO: Fetch teapot
-	t := domain.Teapot{}
+	teapot, err := s.dao.FindByID(ctx, req.Id)
+	if err != nil {
+		return nil, err
+	}
 
-	return &teapotv1pb.CalculateVolumeResponse{Volume: t.Volume()}, nil
+	vol := math.Pi * math.Pow(teapot.Radius, 2) * teapot.Height
+
+	return &teapotv1pb.CalculateVolumeResponse{Volume: vol}, nil
 }

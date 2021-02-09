@@ -17,10 +17,21 @@ func New(db *sqlx.DB) *DAO {
 func (d *DAO) FindByID(ctx context.Context, id string) (*domain.Teapot, error) {
 	t := &domain.Teapot{}
 
-	err := d.db.GetContext(ctx, t, "SELECT * FROM teapots WHERE id=?;", id)
+	err := d.db.GetContext(ctx, t, "SELECT * FROM teapots WHERE id=$1;", id)
 	if err != nil {
 		return nil, err
 	}
 
 	return t, err
+}
+
+func (d *DAO) Create(ctx context.Context, tp domain.Teapot) error {
+	t := &domain.Teapot{}
+
+	err := d.db.GetContext(ctx, t, "SELECT * FROM teapots WHERE id=$1;", tp.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

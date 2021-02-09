@@ -3,8 +3,10 @@ module euterpe
 go 1.15
 
 require (
+	github.com/DATA-DOG/go-txdb v0.1.3
 	github.com/andersfylling/disgord v0.26.2
 	github.com/getsentry/sentry-go v0.8.0
+	github.com/golang-migrate/migrate/v4 v4.14.1
 	github.com/golang/protobuf v1.4.3
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
