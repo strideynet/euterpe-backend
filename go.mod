@@ -8,6 +8,9 @@ require (
 	github.com/golang/protobuf v1.4.3
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
+	github.com/jackc/pgx/v4 v4.10.1
+	github.com/jmoiron/sqlx v1.3.1
+	github.com/lib/pq v1.9.0
 	github.com/prometheus/client_golang v0.9.3
 	github.com/rs/xid v1.2.1
 	github.com/stretchr/testify v1.5.1

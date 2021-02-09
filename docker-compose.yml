@@ -1,6 +1,6 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT MANUALLY EDIT.
 # Use ```make dockercompose``
-# Generated at 2021-02-08 09:11:46.215999 +0000 UTC
+# Generated at 2021-02-09 17:35:00.795433 +0000 UTC
 version: "3.8"
 services:
   discord:
@@ -54,4 +54,10 @@ services:
     volumes:
     # So that Traefik can listen to the Docker events
     - /var/run/docker.sock:/var/run/docker.sock
+  postgres:
+    image: postgres:12
+    environment:
+      POSTGRES_PASSWORD: devpassword
+    ports:
+    - "5432:5432"
 

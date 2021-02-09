@@ -13,3 +13,9 @@ Following the following conventions on API design:
 ```shell
 make protos
 ```
+
+## Creating migration
+
+```shell
+migrate create -ext sql -dir ./service.<servicename>/migrations <migrationname>
+```

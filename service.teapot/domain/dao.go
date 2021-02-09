@@ -1,12 +1,17 @@
-package dao
+package domain
 
-import "math"
+import (
+	"math"
+	"time"
+)
 
 type Teapot struct {
-	ID     string
-	Name   string
-	Radius float64
-	Height float64
+	ID         string
+	Name       string
+	Radius     float64
+	Height     float64
+	CreateTime time.Time
+	UpdateTime time.Time
 }
 
 // Volume returns the volume of the cylindrical teapot in cubic metres

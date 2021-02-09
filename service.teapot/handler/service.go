@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"euterpe/service.teapot/dao"
+	"euterpe/service.teapot/domain"
 	teapotv1pb "euterpe/service.teapot/proto"
 )
 
@@ -48,7 +49,7 @@ func (s *Service) CalculateVolume(ctx context.Context, req *teapotv1pb.Calculate
 	}
 
 	// TODO: Fetch teapot
-	t := dao.Teapot{}
+	t := domain.Teapot{}
 
 	return &teapotv1pb.CalculateVolumeResponse{Volume: t.Volume()}, nil
 }

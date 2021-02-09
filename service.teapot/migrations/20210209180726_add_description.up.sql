@@ -1,0 +1,2 @@
+ALTER TABLE teapots
+ADD COLUMN description VARCHAR(128) NULL;
