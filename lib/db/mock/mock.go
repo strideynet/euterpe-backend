@@ -17,6 +17,10 @@ type Mocker struct {
 	svcName string
 }
 
+func connString(dbName string) string {
+	return fmt.Sprintf("postgres://postgres:devpassword@postgres:5432/%s?sslmode=disable", dbName) // Only runs in docker-compose so we can assume values
+}
+
 // DB returns a sqlx.DB instance that wraps a txdb. This should be called for each test, to isolate it's interaction
 // with the database and roll back its changes on completion
 func (m Mocker) DB(t *testing.T) *sqlx.DB {
@@ -29,38 +33,57 @@ func (m Mocker) DB(t *testing.T) *sqlx.DB {
 	return sqlx.NewDb(conn, "txdb")
 }
 
-// New initiates a new mocker, which creates an appropriate test database if it doesn't exist
+// Drops and creates a database with the name provided. Useful for resetting state.
+func dropAndCreateDB(dbName string) error {
+	conn, err := sqlx.Connect("pgx", connString("postgres")) // connect to default db for creation ops
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	_, err = conn.Exec("DROP DATABASE IF EXISTS ?", dbName)
+	if err != nil {
+		return err
+	}
+
+	_, err = conn.Exec("CREATE DATABASE ?", dbName)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Setup initiates a new mocker, which creates an appropriate test database if it doesn't exist
 // It drops the contents of the database before then running the upwards migration. This lets us test the migrations
-// get our database to an expected state.
-//
-// New should ideally be called once per test package.
-func New(svcName string) *Mocker {
-	connString := "postgres://postgres:devpassword@postgres:5432/test?sslmode=disable"
-	txdb.Register("txdb", "pgx", connString)
+// get our database to an expected state. *Setup should be called at most once per test package.*
+func Setup(svcName string) (*Mocker, error) {
+	dbName := svcName + "_test"
+	txdb.Register("txdb", "pgx", connString(dbName))
 
-	sourceFiles := fmt.Sprintf("file:///app/service.%s/migrations", svcName)
-
-	// Drop any existing content
-	m, err := migrate.New(sourceFiles, connString)
+	err := dropAndCreateDB(dbName)
 	if err != nil {
-		panic(err)
-	}
-	defer m.Close()
-	err = m.Drop()
-	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	// Duplicated because: https://github.com/golang-migrate/migrate/issues/226
-	m, err = migrate.New(sourceFiles, connString)
+	m, err := migrate.New(fmt.Sprintf("file:///app/service.%s/migrations", svcName), connString(dbName))
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer m.Close()
 	err = m.Up()
 	if err != nil {
+		return nil, err
+	}
+
+	return &Mocker{svcName: svcName}, nil
+}
+
+func MustSetup(svcName string) *Mocker {
+	m, err := Setup(svcName)
+	if err != nil {
 		panic(err)
 	}
 
-	return &Mocker{svcName: svcName}
+	return m
 }
