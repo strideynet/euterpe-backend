@@ -6,21 +6,42 @@ import (
 	"euterpe/service.teapot/dao"
 	"euterpe/service.teapot/domain"
 	teapotv1pb "euterpe/service.teapot/proto"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type Service struct {
 	teapotv1pb.UnimplementedTeapotServer
+	dao *dao.DAO
 }
 
-func New() *Service {
-	return &Service{}
+func New(dao *dao.DAO) *Service {
+	return &Service{
+		dao: dao,
+	}
 }
 
 func (s *Service) GetById(ctx context.Context, req *teapotv1pb.GetByIdRequest) (*teapotv1pb.GetByIdResponse, error) {
 	if req.Id == "" {
 		return nil, errors.New("id should be non-empty string")
 	}
-	return &teapotv1pb.GetByIdResponse{}, nil
+
+	teapot, err := s.dao.FindByID(ctx, req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &teapotv1pb.GetByIdResponse{
+		// TODO: transform function to replace below
+		Teapot: &teapotv1pb.Teapot{
+			Id:          teapot.ID,
+			Name:        teapot.Name,
+			Radius:      teapot.Radius,
+			Height:      teapot.Height,
+			CreateTime:  timestamppb.New(teapot.CreateTime),
+			UpdateTime:  timestamppb.New(teapot.UpdateTime),
+			Description: "",
+		},
+	}, nil
 }
 
 func (s *Service) Create(ctx context.Context, req *teapotv1pb.CreateRequest) (*teapotv1pb.CreateResponse, error) {

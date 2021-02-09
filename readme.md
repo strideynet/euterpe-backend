@@ -19,3 +19,8 @@ make protos
 ```shell
 migrate create -ext sql -dir ./service.<servicename>/migrations <migrationname>
 ```
+
+```shell
+migrate -source file://./service.teapot/migrations -database "postgresql://postgres:devpassword@localhost:5432/teapot?sslmode=disable" up
+
+```
