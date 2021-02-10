@@ -13,6 +13,12 @@ import (
 	"time"
 )
 
+// WARNING!!!
+// This code sucks. The dropping of the database doesn't play nicely with concurrent test execution and a service
+// having multiple tables.
+// We should probably refactor out the deletion/recreation of the db and migration steps to be a seperate command
+// That can be ran before
+
 type Mocker struct {
 	svcName string
 }
@@ -33,7 +39,7 @@ func (m Mocker) DB(t *testing.T) *sqlx.DB {
 	return sqlx.NewDb(conn, "txdb")
 }
 
-// Drops and creates a database with the name provided. Useful for resetting state.
+// dropAndCreateDB drops and creates a database with the name provided. Useful for resetting state.
 func dropAndCreateDB(dbName string) error {
 	conn, err := sqlx.Connect("pgx", connString("postgres")) // connect to default db for creation ops
 	if err != nil {
@@ -41,12 +47,12 @@ func dropAndCreateDB(dbName string) error {
 	}
 	defer conn.Close()
 
-	_, err = conn.Exec("DROP DATABASE IF EXISTS ?", dbName)
+	_, err = conn.Exec(fmt.Sprintf("DROP DATABASE IF EXISTS %s;", dbName))
 	if err != nil {
 		return err
 	}
 
-	_, err = conn.Exec("CREATE DATABASE ?", dbName)
+	_, err = conn.Exec(fmt.Sprintf("CREATE DATABASE %s;", dbName))
 	if err != nil {
 		return err
 	}
